@@ -1,117 +1,144 @@
 <!DOCTYPE html>
 <html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"
+      integrity="sha512-ZwR1/gSZM3ai6vCdI+LVF1zSq/5HznD3ZSTk7kajkaj4D292NLuduDCO1c/NT8Id+jE58KYLKT7hXnbtryGmMg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+  </head>
 
-<head>
-  <meta charset="utf-8">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js" integrity="sha512-ZwR1/gSZM3ai6vCdI+LVF1zSq/5HznD3ZSTk7kajkaj4D292NLuduDCO1c/NT8Id+jE58KYLKT7hXnbtryGmMg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <body>
+    <h1>Home Telemetry Chart</h1>
+    Last update time:
+    <div id="time"></div>
+    <h2>
+      Temperature:
+      <a id="temp"></a>°C
+    </h2>
+    <div style="width: 400px">
+      <canvas id="Temperature"></canvas>
+    </div>
+    <h2>
+      Pressure:
+      <a id="pressure"></a>hPa
+    </h2>
+    <div style="width: 400px">
+      <canvas id="Pressure"></canvas>
+    </div>
+    <h2>
+      Humidity:
+      <a id="humid"></a>%RH
+    </h2>
+    <div style="width: 400px">
+      <canvas id="Humidity"></canvas>
+    </div>
 
-</head>
+    <script>
+      async function getDayData() {
+        let url =
+          "https://http2d1telemetry.deltav-lab.workers.dev/api/day.json";
+        try {
+          let response = await fetch(url);
+          let data = await response.json();
 
-<body>
-<h1>Home Telemetry Chart</h1>
-<h2>Temperature</h2>
-<div style="width:400px">
-  <canvas id="Temperature"></canvas>
-</div>
-<h2>Pressure</h2>
-<div style="width:400px">
-  <canvas id="Pressure"></canvas>
-</div>
-<h2>Humidity</h2>
-<div style="width:400px">
-  <canvas id="Humidity"></canvas>
-</div>
+          let time = [];
+          let temp = [];
+          let pressure = [];
+          let humid = [];
 
-<script>
-	async function getDayData() {
-    	let url = "https://http2d1telemetry.deltav-lab.workers.dev/api/day.json";
-    	try {
-        	let response = await fetch(url);
-        	let data = await response.json();
+          for (var i = data.length-1; i >=0 ; i--) {
+            time.push(new Date(data[i].Time * 1000).toLocaleString());
+            temp.push(data[i].Temperature);
+            pressure.push(data[i].Pressure);
+            humid.push(data[i].Humidity);
+          }
 
-			let time = [];
-			let temp = [];
-			let pressure = [];
-			let humid = [];
+          let timed = document.getElementById("time");
+          timed.textContent = time[data.length-1];
+          let tempd = document.getElementById("temp");
+          tempd.textContent = temp[data.length-1];
+          let pressured = document.getElementById("pressure");
+          pressured.textContent = pressure[data.length-1];
+          let humidd = document.getElementById("humid");
+          humidd.textContent = humid[data.length-1];
 
-			for (var i = 0; i < data.length; i++) {
-				time.push(new Date(data[i].Time * 1000).toLocaleString());
-				temp.push(data[i].Temperature);
-				pressure.push(data[i].Pressure);
-				humid.push(data[i].Humidity);
-			}
-
-    		var ctx = document.getElementById('Temperature');
-    		var myChart = new Chart(ctx, {
-    			type: 'line',
-    			data: {
-					labels: time,
-					datasets: [{
-						label: 'Temperature',
-						data: temp,
-						backgroundColor: 'rgba(255, 99, 132, 0.2)',
-						borderColor: 'rgba(255, 99, 132, 1)',
-						borderWidth: 0.5,
-						pointRadius: 0,  
-					}]
-				},
-    			options: {
-    				y: {
-    					min: 20,
-    					max: 40,
-    				},
-    			},
-    		});
-    		var ctx = document.getElementById('Pressure');
-    		var myChart = new Chart(ctx, {
-    			type: 'line',
-    			data: {
-					labels: time,
-					datasets: [{
-						label: 'Pressure',
-						data: pressure,
-						backgroundColor: 'rgba(132, 255, 99, 0.2)',
-						borderColor: 'rgba(132, 255, 99, 1)',
-						borderWidth: 0.5,
-						pointRadius: 0,  
-					}]
-				},
-    			options: {
-    				y: {
-    					min: 950,
-    					max: 1050,
-    				},
-    			},
-    		});
-    		var ctx = document.getElementById('Humidity');
-    		var myChart = new Chart(ctx, {
-    			type: 'line',
-    			data: {
-					labels: time,
-					datasets: [{
-						label: 'Humidity',
-						data: humid,
-						backgroundColor: 'rgba(99, 132, 255, 0.2)',
-						borderColor: 'rgba(99, 132, 255, 1)',
-						borderWidth: 0.5,
-						pointRadius: 0,  
-					}]
-				},
-    			options: {
-    				y: {
-    					min: 0,
-    					max: 100,
-    				},
-    			},
-    		});
-
-		} catch (error) {
-    	    console.error('Error fetching data:', error);
-    	}
-	}
-	document.addEventListener('DOMContentLoaded', getDayData);
-</script>
-
-</body>
-
+          var ctx = document.getElementById("Temperature");
+          var myChart = new Chart(ctx, {
+            type: "line",
+            data: {
+              labels: time,
+              datasets: [
+                {
+                  label: "Temperature",
+                  data: temp,
+                  backgroundColor: "rgba(255, 99, 132, 0.2)",
+                  borderColor: "rgba(255, 99, 132, 1)",
+                  borderWidth: 0.5,
+                  pointRadius: 0,
+                },
+              ],
+            },
+            options: {
+              y: {
+                min: 20,
+                max: 40,
+              },
+            },
+          });
+          var ctx = document.getElementById("Pressure");
+          var myChart = new Chart(ctx, {
+            type: "line",
+            data: {
+              labels: time,
+              datasets: [
+                {
+                  label: "Pressure",
+                  data: pressure,
+                  backgroundColor: "rgba(132, 255, 99, 0.2)",
+                  borderColor: "rgba(132, 255, 99, 1)",
+                  borderWidth: 0.5,
+                  pointRadius: 0,
+                },
+              ],
+            },
+            options: {
+              y: {
+                min: 950,
+                max: 1050,
+              },
+            },
+          });
+          var ctx = document.getElementById("Humidity");
+          var myChart = new Chart(ctx, {
+            type: "line",
+            data: {
+              labels: time,
+              datasets: [
+                {
+                  label: "Humidity",
+                  data: humid,
+                  backgroundColor: "rgba(99, 132, 255, 0.2)",
+                  borderColor: "rgba(99, 132, 255, 1)",
+                  borderWidth: 0.5,
+                  pointRadius: 0,
+                },
+              ],
+            },
+            options: {
+              y: {
+                min: 0,
+                max: 100,
+              },
+            },
+          });
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      }
+      document.addEventListener("DOMContentLoaded", getDayData);
+    </script>
+  </body>
 </html>
