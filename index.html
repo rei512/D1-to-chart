@@ -36,10 +36,15 @@
       <canvas id="Humidity"></canvas>
     </div>
 
-    <script>
+  <script>
+      let limit =140;
+      const params = new URLSearchParams(window.location.search);
+    if (params.has('size')) {
+      limit = parseInt(params.get('size'), 10);
+    }
       async function getDayData() {
         let url =
-          "https://http2d1telemetry.deltav-lab.workers.dev/api/day.json";
+          "https://http2d1telemetry.deltav-lab.workers.dev/api/day.json?size=" + limit;
         try {
           let response = await fetch(url);
           let data = await response.json();
