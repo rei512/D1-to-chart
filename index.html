@@ -11,26 +11,27 @@
   </head>
 
   <body>
-    <h1>Home Telemetry Chart</h1>
+    <h1>C105 西2会場内の環境測定</h1>
+    寒いです!寒さ対策をして頑張りましょう!<br>
     Last update time:
     <div id="time"></div>
     <h2>
-      Temperature:
-      <a id="temp"></a>°C
+      気温:
+      <a id="temp"></a> °C
     </h2>
     <div style="width: 400px">
       <canvas id="Temperature"></canvas>
     </div>
     <h2>
-      Pressure:
-      <a id="pressure"></a>hPa
+      気圧:
+      <a id="pressure"></a> hPa
     </h2>
     <div style="width: 400px">
       <canvas id="Pressure"></canvas>
     </div>
     <h2>
-      Humidity:
-      <a id="humid"></a>%RH
+      湿度:
+      <a id="humid"></a> %RH
     </h2>
     <div style="width: 400px">
       <canvas id="Humidity"></canvas>
@@ -85,12 +86,6 @@
                   pointRadius: 0,
                 },
               ],
-            },
-            options: {
-              y: {
-                min: 20,
-                max: 40,
-              },
             },
           });
           var ctx = document.getElementById("Pressure");
